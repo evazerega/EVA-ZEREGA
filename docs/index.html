@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eva Zerega</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Besley:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#f9f6e7; --ink:#121212; --muted:rgba(18,18,18,.75); --line:rgba(18,18,18,.12); --accent:#4a6b3c; --head:#4a6b3c; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--muted); font:16px/1.7 "Instrument Sans",sans-serif; letter-spacing:.6px; }
+  h1,h2,h3 { font-family:Besley,serif; font-weight:400; color:var(--head); margin:0; }
+  a { color:inherit; }
+  .bar { text-align:center; font-size:14px; padding:10px 16px; border-bottom:1px solid var(--line); color:var(--ink); }
+  header { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:20px 48px; border-bottom:1px solid var(--line); }
+  nav { display:flex; gap:28px; }
+  nav a { text-decoration:none; color:var(--ink); font-size:15px; padding-bottom:2px; border-bottom:1px solid transparent; }
+  nav a:hover, nav a.on { border-bottom-color:var(--accent); }
+
+  /* pages: only the active one is shown */
+  [data-page] { display:none; }
+  [data-page].show { display:block; }
+  section.hero[data-page].show { display:grid; }
+  section { padding:96px 48px; max-width:1200px; margin:0 auto; }
+
+  .hero { grid-template-columns:1fr 1fr; gap:64px; align-items:center; min-height:70vh; }
+  .hero img { width:100%; max-width:440px; justify-self:center; border:1px solid var(--ink); }
+  .hero .text { text-align:center; }
+  .hero h1 { font-size:40px; line-height:1.25; margin-bottom:24px; }
+  .hero p { margin:0 auto 28px; max-width:360px; }
+  .link { font-family:Besley,serif; font-size:20px; color:var(--accent); text-underline-offset:6px; }
+  .eyebrow { font-size:13px; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; color:var(--head); text-align:center; }
+  h2 { font-size:32px; margin-bottom:40px; text-align:center; }
+  .about { display:grid; grid-template-columns:1.3fr 1fr; gap:64px; align-items:center; }
+  .about p { margin:0 0 18px; }
+  .about img { width:100%; border:1px solid var(--accent); }
+  .consult-list { margin:0 0 18px; padding-left:20px; }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; }
+  .card { text-align:center; text-decoration:none; }
+  .card .thumb { aspect-ratio:1/1; overflow:hidden; background:#efeadb; margin-bottom:16px; border:1px solid var(--accent); }
+  .card img { width:100%; height:100%; object-fit:cover; object-position:top; transition:transform .4s; }
+  .card:hover img { transform:scale(1.03); }
+  .card h3 { font-size:18px; }
+  .card span { font-size:14px; text-decoration:underline; text-underline-offset:4px; color:var(--accent); }
+  .work { border-top:1px solid var(--line); }
+  .work img { width:100%; display:block; border:1px solid var(--line); margin-bottom:24px; }
+  .work .head { margin-bottom:32px; text-align:center; }
+  .work .head h2 { margin:0; }
+  .substack { text-align:center; }
+  .substack p { max-width:560px; margin:0 auto 24px; }
+  .contact { text-align:center; }
+  .cols { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; }
+  .cols h3 { font-size:18px; margin-bottom:8px; }
+  footer { text-align:center; font-size:13px; padding:32px; border-top:1px solid var(--line); }
+
+  .logo { display:block; line-height:0; }
+  /* real woven tag photo with the lettering swapped */
+  .logo { --s:.5474; }
+  .tagbox { width:calc(548px * var(--s)); height:calc(192px * var(--s)); }
+  .tagimg { position:relative; width:548px; height:192px; transform:scale(var(--s)); transform-origin:0 0;
+    background:url(images/tag-src.png) -40px -40px no-repeat;
+    clip-path:polygon(8px 11px,541px 11px,540px 179px,13px 180px); }
+  .patch { position:absolute; left:75px; top:52px; width:400px; height:108px; -webkit-mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 12px),transparent),linear-gradient(180deg,transparent,#000 14px,#000 calc(100% - 14px),transparent); -webkit-mask-composite:source-in; mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 12px),transparent),linear-gradient(180deg,transparent,#000 14px,#000 calc(100% - 14px),transparent); mask-composite:intersect; }
+
+  /* aged, lived-in fabric: warmer, slightly darker, uneven wear */
+  .tagimg::before { content:""; position:absolute; inset:0; z-index:1; pointer-events:none; mix-blend-mode:multiply;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .34 0 0 0 0 .22 0 0 0 .12 -.02'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='220'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .02' numOctaves='3' seed='12'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .4 0 0 0 0 .25 0 0 0 .4 -.17'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E") 0 0/100% 100%,
+      linear-gradient(90deg, rgba(125,98,58,.11), transparent 9%, transparent 91%, rgba(125,98,58,.11)),
+      linear-gradient(180deg, rgba(125,98,58,.05), transparent 14%, transparent 84%, rgba(125,98,58,.08)),
+      #fdfaf2; }
+  .tagtext { position:absolute; z-index:2; left:0; right:0; top:62px; text-align:center; font:500 56px/1 "Cormorant Garamond",Garamond,serif; font-weight:600; letter-spacing:.3em; padding-left:.3em; color:transparent;
+    background:repeating-linear-gradient(58deg,#3f5f34 0 1.6px,#52763f 1.6px 3.1px,#365228 3.1px 4px); -webkit-background-clip:text; background-clip:text;
+    filter:url(#stitch) drop-shadow(0 1.6px 1px rgba(40,50,30,.45)); }
+  .tagbox { filter:drop-shadow(0 1px 1px rgba(0,0,0,.3)) drop-shadow(0 5px 6px rgba(0,0,0,.2)); }
+
+  /* additions: structure pages */
+  .pillars { display:flex; gap:6px 14px; justify-content:center; flex-wrap:wrap; margin:0 0 28px; padding:0; list-style:none; font-family:Besley,serif; font-size:15px; letter-spacing:.3px; color:var(--ink); }
+  .pillars li::before { content:"·"; color:var(--accent); margin-right:14px; }
+  .pillars li:first-child::before { content:none; margin:0; }
+  .linkrow { display:flex; gap:12px 28px; justify-content:center; flex-wrap:wrap; margin-top:8px; }
+  .linkrow .link { font-size:17px; }
+  .sub { text-align:center; max-width:640px; margin:-16px auto 48px; }
+  .alt { border-top:1px solid var(--line); }
+  .case { display:grid; grid-template-columns:70px 1fr; gap:8px 24px; padding:32px 0; border-top:1px solid var(--line); }
+  .case:first-of-type { border-top:0; }
+  .case .num { font-family:Besley,serif; font-size:28px; color:var(--head); line-height:1.2; }
+  .case h3 { font-size:24px; margin-bottom:4px; }
+  .case .meta { font-size:14px; font-style:italic; margin-bottom:6px; }
+  .case .tags { font-size:13px; text-transform:uppercase; letter-spacing:1.6px; color:var(--ink); margin-bottom:12px; }
+  .case p { margin:0 0 10px; max-width:720px; }
+  .case .soon { font-size:14px; font-style:italic; }
+  .videos { display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; margin-top:18px; }
+  .vid { margin:0; }
+  .vid video { display:block; width:100%; background:#000; }
+  .vid:not(.wide) { width:260px; }
+  .vid.wide { width:420px; max-width:100%; }
+  .vid .crop { position:relative; width:100%; aspect-ratio:2160/1330; overflow:hidden; background:#000; }
+  .vid .crop video { position:absolute; left:0; width:100%; height:auto; top:50%; transform:translateY(-50%) scale(1.01); }
+  .crop.bc { aspect-ratio:404/628; }
+  .crop.bc video { top:0; transform:none; }
+  .cbar { position:absolute; left:0; right:0; bottom:0; z-index:2; display:flex; align-items:center; gap:10px; padding:22px 12px 10px; background:linear-gradient(transparent, rgba(0,0,0,.6)); color:#fff; font-size:12px; letter-spacing:.5px; }
+  .cbar button { flex:0 0 auto; width:24px; height:24px; border:0; padding:0; background:transparent center/18px no-repeat; cursor:pointer; opacity:.95; }
+  .cbar .pp { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M8 5v14l11-7z'/%3E%3C/svg%3E"); }
+  .crop.playing .cbar .pp { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M6 5h4v14H6zM14 5h4v14h-4z'/%3E%3C/svg%3E"); }
+  .cbar .mute { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M3 9v6h4l5 5V4L7 9zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4z'/%3E%3C/svg%3E"); }
+  .cbar .mute.off { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M3 9v6h4l5 5V4L7 9zm12.6 3 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4z'/%3E%3C/svg%3E"); }
+  .cbar .seek { flex:1; min-width:0; height:4px; margin:0; padding:0; border:0; accent-color:#fff; cursor:pointer; }
+  .cbar .time { flex:0 0 auto; min-width:30px; text-align:right; }
+  .playbtn { position:absolute; inset:0 0 44px 0; width:100%; height:calc(100% - 44px); border:0; background:transparent; cursor:pointer; }
+  .playbtn::after { content:""; position:absolute; left:50%; top:50%; width:64px; height:64px; margin:-32px 0 0 -32px; border-radius:50%; background:rgba(18,18,18,.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M9 6.5v11l9-5.5z'/%3E%3C/svg%3E") center/38px no-repeat; transition:opacity .2s; }
+  .crop.playing .playbtn::after { opacity:0; }
+  .crop.playing:hover .playbtn::after { opacity:.9; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23fff' d='M7 6h4v12H7zM13 6h4v12h-4z'/%3E%3C/svg%3E"); }
+  .vid figcaption a { text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--accent); }
+  .vid figcaption { font-size:13px; text-transform:uppercase; letter-spacing:1.6px; margin-top:8px; }
+  .masonry { column-count:3; column-gap:28px; }
+  .masonry > figure { break-inside:avoid; -webkit-column-break-inside:avoid; margin:0 0 36px !important; display:block; width:100% !important; }
+  @media (max-width:900px) { .masonry { column-count:2; } }
+  @media (max-width:560px) { .masonry { column-count:1; } }
+  .vgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:40px; align-items:start; }
+  .vcard { width:100% !important; }
+  .vgrid .vcard:nth-child(2) { align-self:center; }
+  .vcard figcaption { text-transform:none; letter-spacing:.6px; font-size:16px; margin-top:12px; color:var(--ink); }
+  .vcard figcaption a { font-family:Besley,serif; font-size:19px; color:var(--head); }
+  .vcard figcaption span { display:block; font-size:12px; text-transform:uppercase; letter-spacing:1.6px; color:var(--muted); margin-top:2px; }
+  .vgrid.two { grid-template-columns:repeat(3,1fr); }
+  .staticimg { margin:0; }
+  .staticimg img { width:100%; height:auto; display:block; border:1px solid var(--line); }
+  .vgrid > * { min-width:0; }
+  .carousel { position:relative; margin:0; min-width:0; }
+  .carousel .track { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; border:1px solid var(--line); }
+  .carousel .track::-webkit-scrollbar { display:none; }
+  .carousel .track img { flex:0 0 100%; width:100%; height:auto; scroll-snap-align:center; display:block; }
+  .cbtn { position:absolute; top:calc(50% - 60px); width:34px; height:34px; border:0; border-radius:50%; background:rgba(18,18,18,.5); color:#fff; font-size:22px; line-height:32px; cursor:pointer; padding:0; }
+  .cbtn.prev { left:8px; } .cbtn.next { right:8px; }
+  .count { position:absolute; right:10px; top:10px; font-size:12px; letter-spacing:1px; color:#fff; background:rgba(18,18,18,.5); padding:2px 9px; border-radius:12px; }
+  .skills { display:grid; grid-template-columns:repeat(4,1fr); gap:32px; }
+  .skills h3 { font-size:18px; margin-bottom:10px; }
+  .skills ul { list-style:none; margin:0; padding:0; }
+  .skills li { padding:6px 0; border-top:1px solid var(--line); font-size:15px; }
+  .svc { display:grid; grid-template-columns:repeat(2,1fr); gap:32px; }
+  .svc div { border:1px solid var(--accent); padding:28px; }
+  .svc h3 { font-size:20px; margin-bottom:10px; }
+  .svc p { margin:0; }
+  .note { text-align:center; max-width:640px; margin:40px auto 0; }
+  .essays { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; margin:48px 0; }
+  .essay { border-top:1px solid var(--accent); padding-top:16px; }
+  .essay h3 { font-size:18px; margin-bottom:8px; }
+  .essay p { margin:0 0 10px; font-size:15px; }
+  .essay { display:block; text-decoration:none; }
+  .essay img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; margin-bottom:14px; background:#efeadb; }
+  .essay .date { font-size:12px; text-transform:uppercase; letter-spacing:1.6px; margin-bottom:6px; }
+  .essay span { font-size:14px; color:var(--accent); text-decoration:underline; text-underline-offset:4px; }
+  .essay:hover h3 { text-decoration:underline; text-decoration-color:var(--accent); text-underline-offset:4px; }
+  .center { text-align:center; }
+  .formgrid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; text-align:left; }
+  form label { display:block; font-size:13px; text-transform:uppercase; letter-spacing:1.6px; color:var(--ink); margin:0 0 6px; }
+  form input, form select, form textarea { width:100%; font:inherit; letter-spacing:.4px; color:var(--ink); background:transparent; border:1px solid var(--line); border-bottom-color:var(--accent); padding:10px 12px; margin-bottom:18px; border-radius:0; }
+  form input:focus, form select:focus, form textarea:focus { outline:0; border-color:var(--accent); }
+  form textarea { min-height:120px; resize:vertical; }
+  form button { font:inherit; font-family:Besley,serif; font-size:18px; color:#fff; background:var(--accent); border:0; padding:12px 28px; cursor:pointer; }
+  .contactinfo h3 { font-size:18px; margin:0 0 6px; }
+  .contactinfo div { margin-bottom:24px; }
+  .contactinfo ul { margin:0; padding-left:20px; }
+  header { justify-content:center; }
+  nav { justify-content:center; flex-wrap:wrap; }
+  .homelogo { min-height:72vh; display:none; align-items:center; justify-content:center; padding:48px 20px; }
+  .homelogo.show { display:flex; }
+  .homelogo .logo { --s:1.1; }
+  .abouthead { font-size:36px; line-height:1.25; margin-bottom:36px; }
+  .aboutlead { font-size:18px; margin-bottom:36px !important; }
+  @media (max-width:800px) {
+    .homelogo .logo { --s:.62; }
+    .vgrid, .vgrid.two { grid-template-columns:1fr; }
+    .skills { grid-template-columns:1fr 1fr; gap:24px; }
+    .svc,.essays,.formgrid { grid-template-columns:1fr; gap:24px; }
+    .case { grid-template-columns:1fr; }
+    header { padding:16px 20px; flex-direction:column; gap:14px; }
+    nav { gap:18px; flex-wrap:wrap; justify-content:center; }
+    section { padding:64px 20px; }
+    .hero,.about,.grid,.cols { grid-template-columns:1fr; gap:32px; }
+    .hero { min-height:0; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="stitch" x="-5%" y="-15%" width="110%" height="130%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="8" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8" xChannelSelector="R" yChannelSelector="G" result="d"/>
+    <feGaussianBlur in="d" stdDeviation="1.1" result="b"/>
+    <feSpecularLighting in="b" surfaceScale="4" specularConstant="0.6" specularExponent="22" lighting-color="#ffffff" result="spec">
+      <feDistantLight azimuth="225" elevation="52"/>
+    </feSpecularLighting>
+    <feComposite in="spec" in2="d" operator="in" result="hl"/>
+    <feComposite in="d" in2="hl" operator="arithmetic" k1="0" k2="1" k3="0.3" k4="0"/>
+  </filter>
+</svg>
+<header>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#portfolio">Portfolio</a>
+    <a href="#services">Services</a>
+    <a href="#writing">Writing</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- HOME -->
+<section class="homelogo" data-page="home">
+<a class="logo" href="#home" aria-label="Eva Zerega – home">
+  <div class="tagbox">
+    <div class="tagimg">
+      <svg class="patch" viewBox="0 0 400 108" width="400" height="108"><image href="images/tag-strip.png" x="0" y="0" width="400" height="36.4" preserveAspectRatio="none"/><image href="images/tag-strip.png" x="0" y="0" width="400" height="36.4" preserveAspectRatio="none" transform="translate(0 72.4) scale(1 -1)"/><image href="images/tag-strip.png" x="0" y="71.6" width="400" height="36.4" preserveAspectRatio="none"/></svg>
+      <span class="tagtext">EVA ZEREGA</span>
+    </div>
+  </div>
+</a>
+</section>
+
+<!-- ABOUT -->
+<section data-page="about" id="about">
+  <div class="about">
+    <div>
+      <h1 class="abouthead">Marketing, content &amp; the ideas in between.</h1>
+      <div class="eyebrow" style="text-align:left">A little about me</div>
+      <p>I’m a marketing and creative professional working across beauty, lifestyle, and digital media. A graduate of St. Lawrence University, where I studied business and creative writing, I bring together strategic thinking, editorial sensibility, and hands-on experience in social media, brand marketing, and content production.</p>
+      <p>My approach is grounded in understanding both the brand and its audience, developing thoughtful creative strategies, and translating them into content that feels considered, relevant, and cohesive.</p>
+    </div>
+    <img src="images/eva-portrait.png" alt="Eva Zerega">
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section data-page="portfolio" id="portfolio">
+  <h2>Portfolio</h2>
+  <p class="sub">A selection of my creative work, and the skills behind it.</p>
+
+    <div class="masonry">
+    <figure class="vcard staticimg">
+      <img src="images/meticulous/moodboard.jpg" alt="Meticulous Skincare Longevity Hybrid Defense Serum static post" width="900" height="1125">
+      <figcaption><a href="https://meticulousskincare.com/" target="_blank" rel="noopener">Meticulous Skincare</a><span>Longevity Hybrid Defense Serum · Static Post</span></figcaption>
+    </figure>
+    <figure class="vid vcard">
+      <video controls playsinline preload="metadata" src="videos/poppi.mp4#t=0.1"></video>
+      <figcaption><a href="https://www.drinkpoppi.com/" target="_blank" rel="noopener">Poppi</a><span>Kappa Kappa Gamma Partnership</span></figcaption>
+    </figure>
+    <figure class="vid vcard">
+      <div class="crop"><video playsinline loop preload="metadata" src="videos/dr-few.mp4#t=0.1"></video><button class="playbtn" type="button" aria-label="Play video"></button><div class="cbar"><button class="pp" type="button" aria-label="Play or pause"></button><input class="seek" type="range" min="0" max="100" step="0.1" value="0" aria-label="Seek"><span class="time">0:00</span><button class="mute" type="button" aria-label="Mute or unmute"></button></div></div>
+      <figcaption><a href="https://www.drfewskincare.com/" target="_blank" rel="noopener">Dr. Few</a><span>Kappa Kappa Gamma Partnership</span></figcaption>
+    </figure>
+    <figure class="vcard carousel">
+      <div class="track"><img src="images/meticulous/hybrid-1.jpg" alt="Longevity Hybrid Defense Serum carousel, slide 1 of 5" width="900" height="1125"><img src="images/meticulous/hybrid-2.jpg" alt="Longevity Hybrid Defense Serum carousel, slide 2 of 5" width="900" height="1125"><img src="images/meticulous/hybrid-3.jpg" alt="Longevity Hybrid Defense Serum carousel, slide 3 of 5" width="900" height="1125"><img src="images/meticulous/hybrid-4.jpg" alt="Longevity Hybrid Defense Serum carousel, slide 4 of 5" width="900" height="1125"><img src="images/meticulous/hybrid-5.jpg" alt="Longevity Hybrid Defense Serum carousel, slide 5 of 5" width="900" height="1125"></div>
+      <button class="cbtn prev" type="button" aria-label="Previous slide">‹</button><button class="cbtn next" type="button" aria-label="Next slide">›</button><span class="count">1 / 5</span>
+      <figcaption><a href="https://meticulousskincare.com/" target="_blank" rel="noopener">Meticulous Skincare</a><span>Longevity Hybrid Defense Serum · Carousel</span></figcaption>
+    </figure>
+    <figure class="vid vcard">
+      <div class="crop bc"><video playsinline loop preload="metadata" src="videos/slu-national-cookie-day.mp4#t=0.1"></video><button class="playbtn" type="button" aria-label="Play video"></button><div class="cbar"><button class="pp" type="button" aria-label="Play or pause"></button><input class="seek" type="range" min="0" max="100" step="0.1" value="0" aria-label="Seek"><span class="time">0:00</span><button class="mute" type="button" aria-label="Mute or unmute"></button></div></div>
+      <figcaption><a href="https://www.stlawu.edu/" target="_blank" rel="noopener">St. Lawrence University</a><span>Marketing Team · National Cookie Day</span></figcaption>
+    </figure>
+    <figure class="vcard carousel">
+      <div class="track"><img src="images/meticulous/restore-1.jpg" alt="Revolumizing Bioactive Moisturizer carousel, slide 1 of 6" width="900" height="1125"><img src="images/meticulous/restore-2.jpg" alt="Revolumizing Bioactive Moisturizer carousel, slide 2 of 6" width="900" height="1125"><img src="images/meticulous/restore-3.jpg" alt="Revolumizing Bioactive Moisturizer carousel, slide 3 of 6" width="900" height="1125"><img src="images/meticulous/restore-4.jpg" alt="Revolumizing Bioactive Moisturizer carousel, slide 4 of 6" width="900" height="1125"><img src="images/meticulous/restore-5.jpg" alt="Revolumizing Bioactive Moisturizer carousel, slide 5 of 6" width="900" height="1125"><img src="images/meticulous/restore-6.jpg" alt="Revolumizing Bioactive Moisturizer carousel, slide 6 of 6" width="900" height="1125"></div>
+      <button class="cbtn prev" type="button" aria-label="Previous slide">‹</button><button class="cbtn next" type="button" aria-label="Next slide">›</button><span class="count">1 / 6</span>
+      <figcaption><a href="https://meticulousskincare.com/" target="_blank" rel="noopener">Meticulous Skincare</a><span>Revolumizing Bioactive Moisturizer · Carousel</span></figcaption>
+    </figure>
+  </div>
+
+  <p class="center" style="margin-top:56px">Looking for my writing? <a class="link" style="font-size:17px" href="#writing">Read 2¢</a></p>
+
+  <div class="skillsblock">
+    <h2 style="margin-top:56px">Skills</h2>
+    <div class="skills">
+      <div><h3>Strategy</h3><ul><li>Brand Marketing</li><li>Social Media Strategy</li><li>Content Strategy</li><li>Campaign Coordination</li><li>Integrated Marketing</li></ul></div>
+      <div><h3>Creators &amp; Community</h3><ul><li>Influencer &amp; Creator Marketing</li><li>Creator Outreach</li><li>Product Seeding</li><li>Community Management</li></ul></div>
+      <div><h3>Creative &amp; Production</h3><ul><li>Creative Concepting</li><li>Content Production</li><li>Shoot Production</li><li>Production Planning</li><li>Sourcing</li><li>Scriptwriting &amp; Copywriting</li></ul></div>
+      <div><h3>Research &amp; Insights</h3><ul><li>Social Analytics</li><li>Competitive Research</li><li>Market Research</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section data-page="services" id="services">
+  <h2>How we can work together</h2>
+  <div class="svc">
+    <div><h3>Social Media &amp; Content Strategy</h3><p>Content calendars, content pillars, platform strategy, campaign planning, brand voice, and performance-informed recommendations.</p></div>
+    <div><h3>Creative Development &amp; Production</h3><p>Content concepts, shot lists, storyboards, shoot planning, production coordination, asset organization, and short-form video concepts.</p></div>
+    <div><h3>Brand &amp; Influencer Marketing</h3><p>Creator research, influencer outreach, product seeding coordination, campaign tracking, launch support, and partnership planning.</p></div>
+    <div><h3>Copywriting &amp; Digital Storytelling</h3><p>Social captions, educational content, campaign messaging, newsletter writing, and editorial concepts.</p></div>
+  </div>
+  <p class="note">Available for both ongoing freelance engagements and individual projects.</p>
+  <p class="center"><a class="link" href="#contact">Start an inquiry</a></p>
+</section>
+
+<!-- WRITING -->
+<section data-page="writing" id="writing">
+  <h2>Writing</h2>
+  <p class="center" style="margin-top:-24px;font-family:Besley,serif;font-size:22px;color:var(--ink)">2¢</p>
+  <p class="sub">Notes on creativity, culture, places, and the small details that make a life feel like your own.</p>
+  <p class="center"><a class="link" href="https://evazerega.substack.com/" target="_blank" rel="noopener">Subscribe on Substack</a></p>
+
+  <div class="essays">
+    <a class="essay" href="https://evazerega.substack.com/p/postgrad-bluesss" target="_blank" rel="noopener"><img src="https://substackcdn.com/image/fetch/w_600,h_450,c_fill,f_jpg,q_auto:good/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F6f525921-ade5-4f05-a5cb-28fd43a90345_3024x4032.heic" alt=""><div class="date">Sep 26, 2026</div><h3>Postgrad bluesss</h3><p>And all the other shades in between</p><span>Read on Substack →</span></a>
+    <a class="essay" href="https://evazerega.substack.com/p/to-clarify" target="_blank" rel="noopener"><img src="https://substackcdn.com/image/fetch/w_600,h_450,c_fill,f_jpg,q_auto:good/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8b09670b-738d-42bd-a43a-9a8f3e5d10b6_4032x3024.heic" alt=""><div class="date">Sep 24, 2026</div><h3>To clarify...</h3><p>I do not hate social media.</p><span>Read on Substack →</span></a>
+    <a class="essay" href="https://evazerega.substack.com/p/regular" target="_blank" rel="noopener"><img src="https://substackcdn.com/image/fetch/w_600,h_450,c_fill,f_jpg,q_auto:good/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F8b9f1ce0-9546-4b48-964c-d53d9f134bcf_4032x3024.heic" alt=""><div class="date">Sep 16, 2026</div><h3>Regular</h3><p>Repetition, Recognition, and Being Known</p><span>Read on Substack →</span></a>
+    <a class="essay" href="https://evazerega.substack.com/p/what-i-read-this-summer" target="_blank" rel="noopener"><img src="https://substackcdn.com/image/fetch/w_600,h_450,c_fill,f_jpg,q_auto:good/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F10bafd82-c2bb-4d16-9e61-0e1509b6526e_2598x2951.jpeg" alt=""><div class="date">Sep 11, 2026</div><h3>What I read this summer</h3><p>Now that Labor Day has come and gone, I would like to share what I read this summer… and perhaps because I need to prove I read after last week’s post.</p><span>Read on Substack →</span></a>
+    <a class="essay" href="https://evazerega.substack.com/p/the-literary-crisisdun-dun-dunnnn" target="_blank" rel="noopener"><img src="https://substackcdn.com/image/fetch/w_600,h_450,c_fill,f_jpg,q_auto:good/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F4fd99569-6d8b-41a1-99d8-f575e053865e_482x600.jpeg" alt=""><div class="date">Sep 1, 2026</div><h3>The literary crisis...dun dun dunnnn</h3><p>Books, and the commodification of having thoughts, hobbies, and an interior life</p><span>Read on Substack →</span></a>
+    <a class="essay" href="https://evazerega.substack.com/p/i-am-sick-and-tired-of-all-the-manufactured" target="_blank" rel="noopener"><img src="https://substackcdn.com/image/fetch/w_600,h_450,c_fill,f_jpg,q_auto:good/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fec37ecc6-4cce-47ef-903b-3111a2ebeb26_1200x675.jpeg" alt=""><div class="date">Aug 17, 2026</div><h3>I am sick and tired of all the manufactured</h3><p>And the resulting discourse on performance...It's all ironic and inherently cyclical!! So here is rather long winded rant</p><span>Read on Substack →</span></a>
+  </div>
+
+
+  <p class="note" style="margin-top:0">I write about creativity, culture, travel and everyday details. This is separate from my client work, and shows my voice and what I’m curious about.</p>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" data-page="contact" id="contact">
+  <div class="eyebrow">Contact</div>
+  <h2>Inquiries</h2>
+  <div class="formgrid">
+    <form id="inquiry">
+      <label for="f-name">Name</label>
+      <input id="f-name" name="name" required>
+      <label for="f-email">Email</label>
+      <input id="f-email" name="email" type="email" required>
+      <label for="f-co">Company or brand (optional)</label>
+      <input id="f-co" name="company">
+      <label for="f-msg">Brief description</label>
+      <textarea id="f-msg" name="message" required></textarea>
+      <button type="submit">Send inquiry</button>
+    </form>
+    <div class="contactinfo">
+      <div><h3>Location</h3>New York City Metropolitan Area</div>
+      <div><h3>Elsewhere</h3><a href="https://evazerega.substack.com/" target="_blank" rel="noopener">Substack</a> · <a href="https://www.linkedin.com/in/eva-zerega" target="_blank" rel="noopener">LinkedIn</a></div>
+      <div><h3>Available for</h3>
+        <ul>
+          <li>Freelance social media and content projects</li>
+          <li>Brand partnerships and creator campaigns</li>
+          <li>Production and creative support</li>
+          <li>Employment opportunities</li>
+          <li>Writing and editorial work</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>© Eva Zerega</footer>
+
+<script>
+  var PAGES = ['home','about','portfolio','services','writing','contact'];
+  var ALIAS = { consulting:'services', substack:'writing' };
+  var ANCHORS = [];
+  function route() {
+    var h = (location.hash || '#home').slice(1);
+    var page = PAGES.indexOf(h) > -1 ? h : (ALIAS[h] || 'home');
+    document.querySelectorAll('[data-page]').forEach(function (el) {
+      el.classList.toggle('show', el.getAttribute('data-page') === page);
+    });
+    document.querySelectorAll('nav a').forEach(function (a) {
+      a.classList.toggle('on', a.getAttribute('href') === '#' + page);
+    });
+    var target = ANCHORS.indexOf(h) > -1 && document.getElementById(h);
+    if (target) target.scrollIntoView(); else window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('.crop').forEach(function (c) {
+    var v = c.querySelector('video'), b = c.querySelector('.playbtn');
+    b.addEventListener('click', function () { if (v.paused) { v.play(); } else { v.pause(); } });
+    v.addEventListener('play', function () { c.classList.add('playing'); });
+    v.addEventListener('pause', function () { c.classList.remove('playing'); });
+  });
+  document.querySelectorAll('.carousel').forEach(function (c) {
+    var t = c.querySelector('.track'), n = c.querySelector('.count'), total = t.children.length;
+    function step(d) { t.scrollBy({ left: d * t.clientWidth, behavior: 'smooth' }); }
+    c.querySelector('.prev').addEventListener('click', function () { step(-1); });
+    c.querySelector('.next').addEventListener('click', function () { step(1); });
+    t.addEventListener('scroll', function () { n.textContent = (Math.round(t.scrollLeft / t.clientWidth) + 1) + ' / ' + total; });
+  });
+  function fmt(s) { s = Math.floor(s || 0); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+  document.querySelectorAll('.crop').forEach(function (c) {
+    var v = c.querySelector('video'), r = c.querySelector('.seek'), t = c.querySelector('.time'), m = c.querySelector('.mute'), p = c.querySelector('.pp');
+    function toggle() { if (v.paused) { v.play(); } else { v.pause(); } }
+    p.addEventListener('click', toggle);
+    m.addEventListener('click', function () { v.muted = !v.muted; m.classList.toggle('off', v.muted); });
+    v.addEventListener('timeupdate', function () { if (v.duration) { r.value = (v.currentTime / v.duration) * 100; } t.textContent = fmt(v.currentTime); });
+    r.addEventListener('input', function () { if (v.duration) { v.currentTime = (r.value / 100) * v.duration; } });
+  });
+  window.addEventListener('hashchange', route);
+  route();
+
+  document.getElementById('inquiry').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = e.target, v = function (n) { return f.elements[n].value; };
+    var body = 'Name: ' + v('name') + '\nEmail: ' + v('email') + '\nCompany: ' + (v('company') || '-') + '\n\n' + v('message');
+    location.href = 'mailto:evazerega@gmail.com?subject=' + encodeURIComponent('Website inquiry') +
+                    '&body=' + encodeURIComponent(body);
+  });
+</script>
+</body>
+</html>
